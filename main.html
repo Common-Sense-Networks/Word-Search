@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
 <!--[if gte mso 9]>
 <xml>
   <o:OfficeDocumentSettings>
@@ -48,6 +49,7 @@
 body, h1 {
   margin: 0;
   padding: 0;
+  font-family: monospace;
 }
 
 h1 {
@@ -73,22 +75,25 @@ body {
 /* Home */
 
 .wrap {
-  width: 960px;
-  margin: 0 auto;
-  padding: 40px 0;
+  padding-top: 25px;
+  width: 1200px;
+  margin: auto;
   text-align: center;
   position:relative;
 }
 
 .logo, #gameArea {
-  margin-bottom: 40px;
   color: #2876c3;
-  font-size: 32px;
+  font-size: 44px;
+  font-family: sans-serif;
 }
 
 .sub-logo {
 color: #2876c3;
-font-size: 28px;
+font-size: 38px;
+margin: 0;
+font-family: sans-serif;
+
 }
 
 .ws-area, .ws-words {
@@ -97,12 +102,48 @@ font-size: 28px;
 }
 
 .ws-words {
-  margin-left: 20px;
   text-align: left;
+  padding: 0;
+  list-style: circle;
+}
+
+.ws-area, .ws-completed {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.ws-completed {
+  text-align: left;
+  padding: 0;
+  list-style: none;
+  width: 113px;
+
+}
+
+.ws-completed li:before {
+  content: '✓';
+  font-size: 30px;
+  font-color: green;
+  
 }
 
 .ws-word {
-  margin-bottom: 4px;
+  font-size: 28px;
+}
+
+.ws-word::after
+{
+  color: red;
+}
+.ws-word::after
+{
+  content: attr(data-after-content)
+}
+
+
+.ws-strike {
+  color: red;
+
 }
 
 .ws-words ::first-letter{
@@ -111,7 +152,7 @@ font-size: 28px;
 /* Wordsearch */
 
 .ws-area {
-  background: #fafafa;
+  background: white;
   display: inline-block;
   padding: 20px;
   border-radius: 10px;
@@ -127,15 +168,17 @@ font-size: 28px;
 
 .ws-col {
   cursor: pointer;
-  border: 1px solid grey;
+  border: 1px solid darkgrey;
+  font-weight: bold;
+  font-family: monospace;
 }
 
 .ws-col.ws-selected {
-  background: #eee;
+  background: #EBF8E1;
 }
 
 .ws-found {
-  background: yellow;
+  background: #8EDB53;
 }
 
 .ws-game-over-outer {
@@ -178,6 +221,20 @@ font-size: 28px;
   
 
 <!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet" type="text/css"><!--<![endif]-->
+
+</head>
+
+<body>
+<div class="wrap">
+      <h1 class="logo">CELEBRATE GIRL (AND BOY) POWER!</h1>
+      <h2 class="sub-logo">FIND THESE EMPOWERING WORDS BELOW</h2>
+      
+        <section id="ws-area"></section>
+        <ul class="ws-words"></ul>
+        <ul id="complete" class="ws-completed"></ul>
+    </div>
+</div>
+
 <script type="text/javascript">
   /**
  * Returns a random integer between min and max
@@ -237,9 +294,9 @@ if (typeof Object.merge != 'function') {
 
     // Default settings
     var default_settings = {
-      'directions': ['W', 'N', 'WN', 'EN'],
-      'gridSize': 10,
-      'words': ['one', 'two', 'three', 'four', 'five'],
+      'directions': ['W', 'N'],
+      'gridSize': 18,
+      'words': ['VOICE', 'STRONG', 'RESPECT', 'SMILE', 'KIND', 'GIRL', 'HAPPY', 'SMART', 'BRAVE', 'HONEST', 'EQUAL', 'POWER', 'FUN', 'LAUGH', 'HERO'],
       'wordsList' : [],
       'debug': false
     }
@@ -441,8 +498,8 @@ if (typeof Object.merge != 'function') {
       for (var col = 0; col < this.settings.gridSize; col++) {
         var cvEl = document.createElement('canvas');
         cvEl.setAttribute('class', 'ws-col');
-        cvEl.setAttribute('width', 40);
-        cvEl.setAttribute('height', 40);
+        cvEl.setAttribute('width', 35);
+        cvEl.setAttribute('height', 35);
 
         // Fill text in middle center
         var x = cvEl.width / 2,
@@ -553,10 +610,11 @@ if (typeof Object.merge != 'function') {
       //Cross word off list.
       var wordList = document.querySelector(".ws-words");
       var wordListItems = wordList.getElementsByTagName("li");
+      var completedList = document.getElementById('complete')
       for(var i=0; i<wordListItems.length; i++){
         if(words[0] == removeDiacritics(wordListItems[i].innerHTML.toUpperCase())){         
-          if(wordListItems[i].innerHTML != "<del>"+wordListItems[i].innerHTML+"</del>") { //Check the word is never found
-            wordListItems[i].innerHTML = "<del>"+wordListItems[i].innerHTML+"</del>";
+          if(wordListItems[i].innerHTML != "<del>"+wordListItems[i].innerHTML+"</del>") {
+            completedList.append(wordListItems[i])
             //Increment solved words.
             this.solved++;
           }
@@ -791,32 +849,7 @@ function removeDiacritics(str) {
 //------------------------------Search language--------------------------------------------------//
 // Determine what letters injected on grid
 function searchLanguage(firstLetter)
-{
-    codefirstLetter = firstLetter.charCodeAt();
-    var codeLetter = [65,90];
-    if((codefirstLetter>=65) && (codefirstLetter<=90)) { // Latin
-        return codeLetter = [65,90];
-    }
-    if((codefirstLetter>=1488) && (codefirstLetter<=1514)) { //Hebrew × -> ×ª
-        return codeLetter = [1488,1514];
-    }
-    if((codefirstLetter>=913) && (codefirstLetter<=937))    { //Greek Î‘ -> Î©
-        return codeLetter = [913,929]; //930 is blank
-    }
-    if((codefirstLetter>=1040) && (codefirstLetter<=1071))  { //Cyrillic Ð -> Ð¯
-        return codeLetter = [1040,1071]; //930 is blank
-    }
-    if((codefirstLetter>=1569) && (codefirstLetter<=1610))  { //Arab
-        return codeLetter = [1569,1594]; //Between 1595 and 1600, no letter
-    }
-    if((codefirstLetter>=19969) && (codefirstLetter<=40891))    { //Chinese
-        return codeLetter = [19969,40891];
-    }
-    if((codefirstLetter>=12354) && (codefirstLetter<=12436))    { //Japan Hiragana
-        return codeLetter = [12388,12418]; //Only no small letter
-    }
-    console.log("Letter not detected : "+firstLetter+":"+codefirstLetter);
-    return codeLetter;
+{  return [65,90];
     
     
 }
@@ -829,20 +862,61 @@ function searchLanguage(firstLetter)
       for (i in words) {
         var liEl = document.createElement('li');
         liEl.setAttribute('class', 'ws-word');
+        if (words[i] == 'VOICE'){ 
+          liEl.style.color = '#60b5e3';
+        }
+        if (words[i] == 'STRONG'){ 
+          liEl.style.color = '#cc697c';
+        }
+        if (words[i] == 'RESPECT'){ 
+          liEl.style.color = '#4ea11a';
+        }
+        if (words[i] == 'SMILE'){ 
+          liEl.style.color = '#e9b13c';
+        }
+        if (words[i] == 'KIND'){ 
+          liEl.style.color = '#2876c3';
+        }
+        if (words[i] == 'GIRL'){ 
+          liEl.style.color = '#ff924d';
+        }
+        if (words[i] == 'HAPPY'){ 
+          liEl.style.color = '#02999d';
+        }
+        if (words[i] == 'SMART'){ 
+          liEl.style.color = '#ff66c3';
+        }
+        if (words[i] == 'BRAVE'){ 
+          liEl.style.color = '#6dc530';
+        }
+        if (words[i] == 'HONEST'){ 
+          liEl.style.color = '#8f3850';
+        }
+        if (words[i] == 'EQUAL'){ 
+          liEl.style.color = '#8b52ff';
+        }
+        if (words[i] == 'POWER'){ 
+          liEl.style.color = '#2c78c3';
+        }
+        if (words[i] == 'FUN'){ 
+          liEl.style.color = '#f2c774';
+        }
+        if (words[i] == 'LAUGH'){ 
+          liEl.style.color = '#ff66c3';
+        }
+        if (words[i] == 'HERO'){ 
+          liEl.style.color = '#4ea11a';
+        }
+        
+        
+
         liEl.innerText = words[i];
+        liEl.style.fontSize = "27px";
+        liEl.style.fontWeight = "bold";
+
         wordsWrap.appendChild(liEl);
       }
   </script>
-</head>
-
-<body>
-<div class="wrap">
-      <h1 class="logo">CELEBRATE GIRL (AND BOY) POWER!</h1>
-      <h2 class="sub-logo">CELEBRATE GIRL (AND BOY) POWER!</h2>
-
-      <section id="ws-area"></section>
-      <ul class="ws-words"></ul>
-    </div>
 
 </body>
 
