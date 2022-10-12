@@ -96,17 +96,15 @@ body {
 
 .ws-word {
   margin-bottom: 4px;
-  font-size: 24px;
-  font-weight: bold;
 }
 
-/* Wordsearch */
 .ws-words ::first-letter{
     text-transform : capitalize;
 }
+/* Wordsearch */
 
 .ws-area {
-  background: #ffffff;
+  background: #fafafa;
   display: inline-block;
   padding: 20px;
   border-radius: 10px;
@@ -119,21 +117,10 @@ body {
 .ws-row {
   line-height: 0;
 }
-.titleSensical {
-  color: #2876c3;
-  font-size: 34px;
-  font-weight: bold;
-}
-
-.subTitleSensical {
-  color: #2876c3;
-  font-size: 28px;
-  font-weight: bold;
-}
 
 .ws-col {
   cursor: pointer;
-  border: 1px solid #bbbbbb;
+  border: 1px solid black;
 
 }
 
@@ -185,7 +172,7 @@ body {
   
 
 <!--[if !mso]><!--><link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet" type="text/css"><!--<![endif]-->
-<script type="text/javascript">
+<script>
   /**
  * Returns a random integer between min and max
  *
@@ -246,7 +233,7 @@ if (typeof Object.merge != 'function') {
     var default_settings = {
       'directions': ['W', 'N', 'WN', 'EN'],
       'gridSize': 10,
-      'words': ['VOICE', 'STRONG', 'RESPECT', 'SMILE', 'KIND', 'GIRL', 'HAPPY', 'SMART', 'BRAVE', 'HONEST', 'EQUAL', 'POWER', 'FUN', 'LAUGH', 'HERO'],
+      'words': ['one', 'two', 'three', 'four', 'five'],
       'wordsList' : [],
       'debug': false
     }
@@ -844,9 +831,6 @@ function searchLanguage(firstLetter)
 
 <body>
 <div class="wrap">
-  <h1 class="titleSensical"> CELEBRATE GIRL (AND BOY) POWER!</h1>
-  <h1 class="subTitleSensical"> FIND THESE EMPOWERING WORDS BELOW</h1>
-
       <section id="ws-area"></section>
       <ul class="ws-words"></ul>
     </div>
